@@ -1,10 +1,12 @@
 # user defined
 .idea/
-.checkpoints/
-.data/
-.logs/
-.preprocessed/
+checkpoints/
+data/
+logs/
+preprocessed/
 slurm*.out
+test/
+images/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
