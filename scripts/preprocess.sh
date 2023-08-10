@@ -1,6 +1,6 @@
 #!/bin/bash
 
-DATASET=sample
+DATASET=thermal
 MODEL=g2s_series_rel
 TASK=reaction_prediction
 REPR_START=smiles
@@ -8,6 +8,24 @@ REPR_END=smiles
 N_WORKERS=8
 
 PREFIX=${DATASET}_${MODEL}_${REPR_START}_${REPR_END}
+
+# >>> conda initialize >>>
+# !! Contents within this block are managed by 'conda init' !!
+__conda_setup="$('/home/pub/opt/intel/oneapi/intelpython/latest/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
+else
+    if [ -f "/home/pub/opt/intel/oneapi/intelpython/latest/etc/profile.d/conda.sh" ]; then
+        . "/home/pub/opt/intel/oneapi/intelpython/latest/etc/profile.d/conda.sh"
+    else
+        export PATH="/home/pub/opt/intel/oneapi/intelpython/latest/bin:$PATH"
+    fi
+fi
+unset __conda_setup
+# <<< conda initialize <<<
+
+conda activate graph2smiles
+
 
 python preprocess.py \
   --model="$MODEL" \

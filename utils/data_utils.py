@@ -658,7 +658,7 @@ def get_graph_features_from_smi(_args):
 def collate_graph_features(graph_features: List[Tuple], directed: bool = True, use_rxn_class: bool = False) \
         -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor, List[np.ndarray], List[np.ndarray]]:
     if directed:
-        padded_features = get_atom_features_sparse(Chem.Atom("*"), use_rxn_class=use_rxn_class, rxn_class=0)
+        padded_features = get_atom_features_sparse(Chem.Atom("Lr"), use_rxn_class=use_rxn_class, rxn_class=0)       #Lr won't show up
         fnode = [np.array(padded_features)]
         fmess = [np.zeros(shape=[1, 2 + BOND_FDIM], dtype=np.int32)]
         agraph = [np.zeros(shape=[1, 11], dtype=np.int32)]

@@ -27,20 +27,20 @@ conda activate graph2smiles
 LOAD_FROM=""
 MODEL=g2s_series_rel
 TASK=reaction_prediction
-DATASET=poly
-MPN_TYPE=dgat
+DATASET=thermal
+MPN_TYPE=dgcn
 MAX_REL_POS=4
 ACCUM_COUNT=4
 ENC_PE=none
 ENC_H=256
-BATCH_SIZE=4096
+BATCH_SIZE=2048
 ENC_EMB_SCALE=sqrt
-MAX_STEP=500000
+MAX_STEP=5000000
 ENC_LAYER=4
 BATCH_TYPE=tokens
 REL_BUCKETS=11
 
-EXP_NO=poly_with_regression_with_beta_2
+EXP_NO=thermal_dgcn_beta1_with_weightEntropy
 REL_POS=emb_only
 ATTN_LAYER=6
 LR=4

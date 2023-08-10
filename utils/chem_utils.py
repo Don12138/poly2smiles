@@ -4,11 +4,7 @@ from typing import List
 
 
 # Symbols for different atoms
-ATOM_LIST = ['C', 'N', 'O', 'S', 'F', 'Si', 'P', 'Cl', 'Br', 'Mg', 'Na', 'Ca', 'Fe',
-             'As', 'Al', 'I', 'B', 'V', 'K', 'Tl', 'Yb', 'Sb', 'Sn', 'Ag', 'Pd', 'Co', 'Se', 'Ti',
-             'Zn', 'H', 'Li', 'Ge', 'Cu', 'Au', 'Ni', 'Cd', 'In', 'Mn', 'Zr', 'Cr', 'Pt', 'Hg', 'Pb',
-             'W', 'Ru', 'Nb', 'Re', 'Te', 'Rh', 'Ta', 'Tc', 'Ba', 'Bi', 'Hf', 'Mo', 'U', 'Sm', 'Os', 'Ir',
-             'Ce', 'Gd', 'Ga', 'Cs', '*', 'unk']
+ATOM_LIST = ['*', 'C', 'N', 'O', 'S', 'F', 'Br', 'Cl', 'Si', 'I', 'As', 'P', 'Se', 'B', 'Sb', 'Sn', 'Ge', 'H', 'Al', 'Te', 'Bi', 'In', 'Pb','Lr']
 ATOM_DICT = {symbol: i for i, symbol in enumerate(ATOM_LIST)}
 
 MAX_NB = 10
@@ -83,10 +79,10 @@ def get_atom_features_sparse(atom: Chem.Atom, rxn_class: int = None, use_rxn_cla
     """
     feature_array = []
     symbol = atom.GetSymbol()
-    symbol_id = ATOM_DICT.get(symbol, ATOM_DICT["unk"])
+    symbol_id = ATOM_DICT.get(symbol, ATOM_DICT["Lr"])
     feature_array.append(symbol_id)
 
-    if symbol in ["*", "unk"]:
+    if symbol in ["Lr"]:
         padding = [999999999] * len(ATOM_FDIM) if use_rxn_class else [999999999] * (len(ATOM_FDIM) - 1)
         feature_array.extend(padding)
 

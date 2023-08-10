@@ -11,12 +11,12 @@ from models.graphfeat import GraphFeatEncoder
 from onmt.decoders import TransformerDecoder
 from onmt.modules.embeddings import Embeddings
 from onmt.translate import BeamSearch, GNMTGlobalScorer, GreedySearch
-from utils.numerical_token_regression import NumericalTokenRegression
+from models.model_utils import NumericalTokenRegression, WeightCrossEntropyLoss
 from typing import Any, Dict, List
 import pdb
 
 class Graph2SeqSeriesRel(nn.Module):
-    def __init__(self, args, vocab: Dict[str, int], property_info: List):
+    def __init__(self, args, vocab: Dict[str, int]):
         super().__init__()
         self.args = args
         self.vocab = vocab
@@ -66,11 +66,12 @@ class Graph2SeqSeriesRel(nn.Module):
 
         self.output_layer = nn.Linear(args.decoder_hidden_size, self.vocab_size, bias=True)
 
-        self.criterion = nn.CrossEntropyLoss(                           # should set weight
+        self.criterion = WeightCrossEntropyLoss( 
+            args=args,
             ignore_index=self.vocab["_PAD"],
-            reduction="mean"
+            reduction="mean",
         )
-        self.numerical_criterion = NumericalTokenRegression(args,property_info,1,self.vocab)
+        self.numerical_criterion = NumericalTokenRegression(args,1,self.vocab)
 
     def encode_and_reshape(self, reaction_batch: G2SBatch):
         hatom, _ = self.encoder(reaction_batch)                         # (n_atoms, h)
@@ -139,7 +140,7 @@ class Graph2SeqSeriesRel(nn.Module):
             target=reaction_batch.tgt_token_ids.float()
         )
 
-        loss = classification_loss + 2 * regression_loss
+        loss = classification_loss + regression_loss
 
         predictions = torch.argmax(dec_outs, dim=1)                             # [b, t]
         mask = (reaction_batch.tgt_token_ids != self.vocab["_PAD"]).long()
