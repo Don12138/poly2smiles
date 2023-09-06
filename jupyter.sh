@@ -1,10 +1,10 @@
 #!/bin/bash
 
-#SBATCH -p Volta
+#SBATCH -p intel32
 #SBATCH -J jupyter
 #SBATCH --nodes=1
 #SBATCH -t 20-00:00
-#SBATCH --mem=10G
+#SBATCH --mem=20G
 
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
@@ -21,7 +21,7 @@ fi
 unset __conda_setup
 # <<< conda initialize <<<
 
-conda activate graph2smiles
+conda activate py_38_torch_113_pyg
 
 jupyter notebook --no-browser  --port=12138 --ip=0.0.0.0 --NotebookApp.password='argon2:$argon2id$v=19$m=10240,t=10,p=8$IMiigJ3sa/bIWixmbFh6ww$9l8Ju9YQ7HWoa4KJXBadLA'
 

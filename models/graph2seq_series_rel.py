@@ -66,11 +66,16 @@ class Graph2SeqSeriesRel(nn.Module):
 
         self.output_layer = nn.Linear(args.decoder_hidden_size, self.vocab_size, bias=True)
 
-        self.criterion = WeightCrossEntropyLoss( 
-            args=args,
+        self.criterion = nn.CrossEntropyLoss(
             ignore_index=self.vocab["_PAD"],
-            reduction="mean",
+            reduction="mean"
         )
+
+        # self.criterion = WeightCrossEntropyLoss( 
+        #     args=args,
+        #     ignore_index=self.vocab["_PAD"],
+        #     reduction="mean",
+        # )
         self.numerical_criterion = NumericalTokenRegression(args,1,self.vocab)
 
     def encode_and_reshape(self, reaction_batch: G2SBatch):
@@ -140,7 +145,7 @@ class Graph2SeqSeriesRel(nn.Module):
             target=reaction_batch.tgt_token_ids.float()
         )
 
-        loss = classification_loss + regression_loss
+        loss = classification_loss + 0 * regression_loss
 
         predictions = torch.argmax(dec_outs, dim=1)                             # [b, t]
         mask = (reaction_batch.tgt_token_ids != self.vocab["_PAD"]).long()

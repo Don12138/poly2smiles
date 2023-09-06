@@ -48,36 +48,6 @@ def main(args):
     else:
         raise ValueError(f"Model {args.model} not supported!")
 
-#     property_info = [
-#     {
-#         "start": 0,
-#         "len": 5,
-#         "point": 1,
-#         "max": 5.,
-#         "min": 0.
-#     },
-#     {
-#         "start": 6,
-#         "len": 6,
-#         "point": 2,
-#         "max": 50.,
-#         "min": 0.
-#     },
-#     {
-#         "start": 13,
-#         "len": 6,
-#         "point": 1,
-#         "max": 1.,
-#         "min": 0.
-#     },
-#     {
-#         "start": 20,
-#         "len": 5,
-#         "point": 1,
-#         "max": 2.,
-#         "min": 0.
-#     }
-# ]
     model = model_class(args, vocab)
     
     for p in model.parameters():
@@ -126,6 +96,9 @@ def main(args):
 
     logging.info("Start training")
     for epoch in range(args.epoch):
+
+        logging.info(f"Start epoch {epoch}")
+
         model.zero_grad()
 
         train_dataset.sort()

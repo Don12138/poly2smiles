@@ -576,7 +576,7 @@ class G2SDataset(Dataset):
 
 def get_graph_from_smiles(smi: str):
     mol = Chem.MolFromSmiles(smi)
-    rxn_graph = RxnGraph(reac_mol=mol)
+    rxn_graph = RxnGraph(reac_mol=mol) 
 
     return rxn_graph
 
