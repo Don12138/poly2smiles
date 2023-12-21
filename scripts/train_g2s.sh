@@ -7,7 +7,7 @@ DATASET=thermal
 MPN_TYPE=dgat
 MAX_REL_POS=4
 ACCUM_COUNT=4
-ENC_PE=none
+ENC_PE=transformer
 ENC_H=256
 BATCH_SIZE=2048
 ENC_EMB_SCALE=sqrt
@@ -28,13 +28,13 @@ REPR_END=smiles
 PREFIX=${DATASET}_${MODEL}_${REPR_START}_${REPR_END}
 
 
-python train.py \
+/home/chenlidong/.conda/envs/graph2smiles/bin/python train.py \
   --model="$MODEL" \
   --data_name="$DATASET" \
   --task="$TASK" \
   --representation_end=$REPR_END \
   --load_from="$LOAD_FROM" \
-  --train_bin="./preprocessed/$PREFIX/train_0.npz" \
+  --train_bin="./preprocessed/$PREFIX/val_0.npz" \
   --valid_bin="./preprocessed/$PREFIX/val_0.npz" \
   --log_file="$PREFIX.train.$EXP_NO.log" \
   --vocab_file="./preprocessed/$PREFIX/vocab_$REPR_END.txt" \

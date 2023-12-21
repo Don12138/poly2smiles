@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH -p intel32
+#SBATCH -p Volta
 #SBATCH -J jupyter
 #SBATCH --nodes=1
 #SBATCH -t 20-00:00

@@ -45,7 +45,7 @@ def add_preprocess_args(parser):
                        choices=["smiles"], type=str, default="")
     group.add_argument("--do_tokenize", help="Whether to tokenize the data files", action="store_true")
     group.add_argument("--make_vocab_only", help="Whether to only make vocab", action="store_true")
-
+    group.add_argument("--compute_graph_distance", help="Whether to compute graph distance", action="store_true",default=True)
 
 def add_train_args(parser):
     group = parser.add_argument_group("Training options")

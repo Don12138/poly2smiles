@@ -27,7 +27,7 @@ unset __conda_setup
 conda activate graph2smiles
 
 
-python preprocess.py \
+/home/chenlidong/.conda/envs/graph2smiles/bin/python preprocess.py \
   --model="$MODEL" \
   --data_name="$DATASET" \
   --task="$TASK" \
@@ -45,3 +45,4 @@ python preprocess.py \
   --max_src_len=1024 \
   --max_tgt_len=1024 \
   --num_workers="$N_WORKERS"
+  --compute_graph_distance="True"

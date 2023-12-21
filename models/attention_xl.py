@@ -4,7 +4,7 @@ import torch.nn as nn
 from onmt.modules.embeddings import PositionalEncoding
 from onmt.modules.position_ffn import PositionwiseFeedForward
 from onmt.utils.misc import sequence_mask
-
+import pdb
 
 def get_sin_encodings(rel_pos_buckets, model_dim) -> torch.Tensor:
     pe = torch.zeros(rel_pos_buckets + 1, model_dim)
@@ -85,8 +85,8 @@ class MultiHeadedRelAttention(nn.Module):
         """
 
         batch_size = inputs.size(0)
-        dim_per_head = self.dim_per_head
-        head_count = self.head_count
+        dim_per_head = self.dim_per_head        # 256 / 8
+        head_count = self.head_count            # 8
 
         def shape(x):
             """Projection."""
@@ -105,8 +105,8 @@ class MultiHeadedRelAttention(nn.Module):
         value = shape(value)
         query = shape(query)            # (b, t_q, h) -> (b, head, t_q, h/head)
 
-        key_len = key.size(2)
-        query_len = query.size(2)
+        key_len = key.size(2)           # max_len
+        query_len = query.size(2)       # max_len
 
         # 2) Calculate and scale scores.
         query = query / math.sqrt(dim_per_head)
@@ -117,7 +117,7 @@ class MultiHeadedRelAttention(nn.Module):
 
         else:
             # a + c
-            u = self.u.reshape(1, head_count, 1, dim_per_head)
+            u = self.u.reshape(1, head_count, 1, dim_per_head)     # [256] -> [1,8,1,32]
             a_c = torch.matmul(query + u, key.transpose(2, 3))
 
             rel_emb = self.relative_pe(distances)           # (b, t_q, t_k) -> (b, t_q, t_k, h)
@@ -182,6 +182,9 @@ class SALayerXL(nn.Module):
             u=u,
             v=v
         )
+        # print(d_model)
+        # print(d_ff)
+        # print(dropout)
         self.feed_forward = PositionwiseFeedForward(d_model, d_ff, dropout)
         self.layer_norm = nn.LayerNorm(d_model, eps=1e-6)
         self.dropout = nn.Dropout(dropout)
@@ -201,7 +204,7 @@ class SALayerXL(nn.Module):
         input_norm = self.layer_norm(inputs)
         context, _ = self.self_attn(input_norm, mask=mask, distances=distances)
         out = self.dropout(context) + inputs
-
+        pdb.set_trace()
         return self.feed_forward(out)
 
 
@@ -211,8 +214,8 @@ class AttnEncoderXL(nn.Module):
         self.args = args
 
         self.num_layers = args.attn_enc_num_layers
-        self.d_model = args.attn_enc_hidden_size
-        self.heads = args.attn_enc_heads
+        self.d_model = args.attn_enc_hidden_size            #hidden_size
+        self.heads = args.attn_enc_heads                    #多少个头
         self.d_ff = args.attn_enc_filter_size
         self.attention_dropout = args.attn_dropout
         self.rel_pos_buckets = args.rel_pos_buckets
@@ -247,7 +250,6 @@ class AttnEncoderXL(nn.Module):
             lengths: (b,)
             distances: (b, t, t)
         """
-
         if self.encoder_pe is not None:
             emb = self.encoder_pe(src)
             out = emb.transpose(0, 1).contiguous()
@@ -261,6 +263,9 @@ class AttnEncoderXL(nn.Module):
 
         for layer in self.attention_layers:
             out = layer(out, mask, distances)
+            # out [batch_size, max_len, hidden_size]
+            # mask [batch_size, 1, max_len]
+            # distances [batch_size, max_len, max_len]
         out = self.layer_norm(out)
 
         return out.transpose(0, 1).contiguous()
